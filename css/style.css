@@ -482,7 +482,7 @@ a {
   .home-nav-mobile {
     position: fixed;
     right: var(--pad-m);
-    bottom: 20 px;
+    bottom: 24px;
     z-index: 20;
     display: flex;
     flex-direction: column;
