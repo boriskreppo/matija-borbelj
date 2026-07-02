@@ -4,9 +4,10 @@
 import crypto from 'node:crypto';
 
 const PASSWORD = process.env.ADMIN_PASSWORD || 'matija123'; // dev fallback only
+const SESSION_SECRET = process.env.SESSION_SECRET || crypto.randomBytes(32).toString('hex');
 const KEY = crypto
   .createHash('sha256')
-  .update('session:' + (process.env.SESSION_SECRET || PASSWORD))
+  .update('session:' + SESSION_SECRET)
   .digest();
 
 const COOKIE_NAME = 'admin_session';
@@ -45,7 +46,12 @@ export function verifyToken(token) {
 export function isAuthed(req) {
   const cookies = req.headers.cookie || '';
   const m = cookies.match(new RegExp(`(?:^|;\\s*)${COOKIE_NAME}=([^;]+)`));
-  return m ? verifyToken(decodeURIComponent(m[1])) : false;
+  if (!m) return false;
+  try {
+    return verifyToken(decodeURIComponent(m[1]));
+  } catch {
+    return false;
+  }
 }
 
 export function sessionCookie(req) {
