@@ -133,7 +133,8 @@ export function withErrors(handler) {
       console.error(err);
       send(res, err.status || 500, { 
         error: err.message || 'Server error',
-        stack: err.stack
+        stack: err.stack,
+        envKeys: Object.keys(process.env).filter(k => k.startsWith('BLOB_') || k.startsWith('VERCEL_'))
       });
     }
   };
