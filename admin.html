@@ -866,6 +866,7 @@
       $('upload-cancel-btn').disabled = true;
 
       let failed = 0;
+      const failReasons = [];
       for (let i = 0; i < total; i++) {
         try {
           const { blob, w, h } = await processImage(fileArr[i], def.maxDim);
@@ -874,12 +875,17 @@
             headers: { 'Content-Type': 'application/octet-stream' },
             body: blob,
           });
-          if (!res.ok) throw new Error('upload failed');
+          if (!res.ok) {
+            let msg = `server error ${res.status}`;
+            try { const j = await res.json(); if (j.error) msg = `${res.status}: ${j.error}`; } catch {}
+            throw new Error(msg);
+          }
           const { id, url } = await res.json();
           manifest[section].push({ id, url, name: fileArr[i].name, date: dateStr, w, h, hidden: false });
           markDirty();
         } catch (e) {
           failed++;
+          if (!failReasons.includes(e.message)) failReasons.push(e.message);
         }
         fillEl.style.width = `${Math.round(((i + 1) / total) * 100)}%`;
         labelEl.textContent = `${i + 1} / ${total}`;
@@ -890,7 +896,7 @@
       $('upload-cancel-btn').disabled = false;
       if (failed) {
         const err = $('upload-error');
-        err.textContent = `${failed} file${failed !== 1 ? 's' : ''} failed to upload.`;
+        err.textContent = `${failed} file${failed !== 1 ? 's' : ''} failed — ${failReasons.join('; ')}`;
         err.classList.add('visible');
       } else {
         closeUpload();
