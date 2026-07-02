@@ -456,6 +456,10 @@ a {
   }
 
   /* ── home ── */
+  .page-home {
+    overflow: visible;
+  }
+
   .page-home .site-header {
     display: flex;
     padding: var(--pad-m);
