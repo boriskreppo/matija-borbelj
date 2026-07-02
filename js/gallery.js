@@ -22,6 +22,9 @@ const gallery = document.querySelector('.gallery');
       img.width = p.w;
       img.height = p.h;
     }
+    if (p.customWidth) {
+      img.style.width = p.customWidth;
+    }
     if (i > 1) img.loading = 'lazy';
     gallery.appendChild(img);
   });

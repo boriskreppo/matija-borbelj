@@ -244,6 +244,28 @@
       min-width: 0;
     }
 
+    .photo-meta.has-width-field {
+      grid-template-columns: 1.2fr 0.8fr 1fr;
+    }
+
+    .photo-width-input {
+      font-family: var(--font-mono);
+      font-size: 14px;
+      letter-spacing: -0.03em;
+      background: transparent;
+      border: none;
+      border-bottom: 1px solid var(--border);
+      padding: 2px 0;
+      outline: none;
+      width: 100%;
+      color: var(--ink);
+    }
+
+    .photo-width-input:focus {
+      border-bottom-color: var(--ink);
+    }
+
+
     .photo-field {
       min-width: 0;
     }
@@ -718,7 +740,7 @@
             <i data-lucide="grip-vertical" style="width:20px;height:20px;"></i>
           </div>
           <img class="photo-thumb" src="${photo.url}" alt="" loading="lazy" />
-          <div class="photo-meta">
+          <div class="photo-meta${currentSection === 'gallery' ? ' has-width-field' : ''}">
             <div class="photo-field">
               <span class="photo-field-label">Image name</span>
               <span class="photo-field-value">${photo.name}</span>
@@ -727,6 +749,12 @@
               <span class="photo-field-label">Date uploaded</span>
               <span class="photo-field-value">${photo.date}</span>
             </div>
+            ${currentSection === 'gallery' ? `
+            <div class="photo-field">
+              <span class="photo-field-label">Custom width (e.g., 35vw, 40%)</span>
+              <input type="text" class="photo-width-input" value="${photo.customWidth || ''}" placeholder="Default" onchange="updateCustomWidth('${photo.id}', this.value)" />
+            </div>
+            ` : ''}
           </div>
           <div class="photo-actions">
             <button class="btn-hide${photo.hidden ? ' is-hidden' : ''}" onclick="toggleHide('${photo.id}')">
@@ -760,6 +788,13 @@
     }
 
     // ── PHOTO ACTIONS ─────────────────────────────────────────
+    function updateCustomWidth(id, val) {
+      const p = getPhotos().find(p => p.id === id);
+      if (!p) return;
+      p.customWidth = val.trim();
+      markDirty();
+    }
+
     function toggleHide(id) {
       const p = getPhotos().find(p => p.id === id);
       if (!p) return;
