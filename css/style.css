@@ -202,12 +202,19 @@ a {
 }
 
 .about-logo {
+  display: inline-block;
   width: 32.1vw;
   /* 617/1920 */
   max-width: 617px;
   height: auto;
   margin-top: 40px;
 }
+
+.about-logo img {
+  width: 100%;
+  display: block;
+}
+
 
 .about-intro {
   max-width: 640px;
