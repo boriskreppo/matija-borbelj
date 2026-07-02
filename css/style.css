@@ -218,12 +218,12 @@ a {
 
 .about-intro {
   max-width: 65vw;
-  margin-top: 45px;
+  margin-top: clamp(25px, 4vh, 45px);
   /* Figma: top 195 (40 + 110 logo + 45) */
 }
 
 .about-intro p+p {
-  margin-top: 24px;
+  margin-top: clamp(12px, 1.8vh, 24px);
 }
 
 .about-grid {
@@ -231,12 +231,13 @@ a {
   grid-template-columns: 1fr 1fr;
   gap: 0 6.4vw;
   /* img ends 950, right col starts 1074 */
-  margin-top: 71px;
+  margin-top: clamp(35px, 5vh, 71px);
   /* Figma: img top 434 */
 }
 
 .about-img {
   width: 100%;
+  max-height: 38vh;
   aspect-ratio: 920 / 616;
   object-fit: cover;
 }
@@ -250,8 +251,8 @@ a {
 .about-subtitle {
   font-family: var(--font-sans);
   font-weight: 400;
-  font-size: 32px;
-  line-height: 32px;
+  font-size: clamp(24px, 1.8vw, 32px);
+  line-height: 1.1;
   letter-spacing: -0.02em;
 }
 
@@ -261,21 +262,21 @@ a {
   grid-template-rows: auto auto;
   grid-auto-flow: column;
   /* DOM order is column-major (matches mobile) */
-  gap: 40px 5.9vw;
-  margin-top: 39px;
+  gap: clamp(20px, 3.5vh, 40px) 5.9vw;
+  margin-top: clamp(20px, 3vh, 39px);
   /* subtitle 739+32 → labels 802 */
 }
 
 .exp-label {
-  font-size: 16px;
-  line-height: 24px;
+  font-size: clamp(13px, 0.9vw, 16px);
+  line-height: 1.2;
   letter-spacing: -0.06em;
 }
 
 .exp-body {
-  margin-top: 16px;
-  font-size: 20px;
-  line-height: 24px;
+  margin-top: clamp(8px, 1.2vh, 16px);
+  font-size: clamp(16px, 1.1vw, 20px);
+  line-height: 1.25;
   letter-spacing: -0.06em;
 }
 
@@ -554,6 +555,7 @@ a {
 
   .about-img {
     width: 158px;
+    max-height: none;
     aspect-ratio: 158 / 210;
     flex-shrink: 0;
   }
