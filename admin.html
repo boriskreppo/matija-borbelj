@@ -1,0 +1,967 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Admin — Matija Borbelj</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500&display=swap" />
+  <style>
+    @font-face {
+      font-family: 'Tabular';
+      src: url('assets/font/Tabular_Complete/Fonts/WEB/fonts/Tabular-Variable.woff2') format('woff2');
+      font-weight: 300 700;
+      font-display: swap;
+      font-style: normal;
+    }
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg: #f2f1ed;
+      --ink: #0d0d0d;
+      --ink-muted: rgba(13, 13, 13, 0.45);
+      --border: rgba(13, 13, 13, 0.25);
+      --danger: #c0392b;
+      --left-w: 317px;
+      --font-mono: 'Tabular', 'IBM Plex Mono', monospace;
+      --font-sans: 'Avenir Next', 'Avenir', 'Montserrat', system-ui, sans-serif;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--ink);
+      font-family: var(--font-mono);
+      letter-spacing: -0.03em;
+      height: 100dvh;
+      display: flex;
+      overflow: hidden;
+    }
+
+    i[data-lucide] {
+      display: inline-flex;
+      pointer-events: none;
+    }
+
+    /* ── LAYOUT ─────────────────────────────────────── */
+    .left-col {
+      width: var(--left-w);
+      flex-shrink: 0;
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      padding: 30px 24px;
+    }
+
+    .admin-logo {
+      font-family: var(--font-sans);
+      font-weight: 500;
+      font-size: 16px;
+      line-height: 20px;
+      text-transform: uppercase;
+      margin-bottom: 60px;
+    }
+
+    .admin-logo span {
+      color: var(--ink-muted);
+      text-transform: none;
+    }
+
+    .right-col {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+
+    .right-top {
+      flex-shrink: 0;
+      height: 84px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      padding: 0 36px;
+    }
+
+    .right-main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+    }
+
+    .right-bottom {
+      flex-shrink: 0;
+      height: 84px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 16px;
+      padding: 0 36px;
+      border-top: 1px solid var(--border);
+      background: var(--bg);
+      z-index: 10;
+    }
+
+    /* ── SIDEBAR SECTIONS ───────────────────────────── */
+    .section-item {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 18px 0;
+      cursor: pointer;
+      user-select: none;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .section-item:first-of-type {
+      border-top: 1px solid var(--border);
+    }
+
+    .section-name {
+      font-family: var(--font-sans);
+      font-weight: 500;
+      font-size: 22px;
+      line-height: 26px;
+      color: var(--ink-muted);
+      transition: color 0.12s;
+    }
+
+    .section-item:hover .section-name,
+    .section-item.active .section-name {
+      color: var(--ink);
+    }
+
+    .section-count {
+      font-size: 14px;
+      color: var(--ink-muted);
+    }
+
+    .sidebar-hint {
+      margin-top: auto;
+      font-size: 12px;
+      line-height: 18px;
+      color: var(--ink-muted);
+    }
+
+    /* ── MAIN HEADER ────────────────────────────────── */
+    .main-header {
+      flex-shrink: 0;
+      padding: 4px 36px 24px;
+      display: flex;
+      align-items: baseline;
+      gap: 20px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .main-title {
+      font-family: var(--font-sans);
+      font-weight: 500;
+      font-size: 44px;
+      line-height: 48px;
+      letter-spacing: -0.02em;
+    }
+
+    .main-count {
+      font-size: 16px;
+      color: var(--ink-muted);
+    }
+
+    /* ── PHOTO LIST ─────────────────────────────────── */
+    .photo-list {
+      flex: 1;
+      overflow-y: auto;
+      padding: 24px 36px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      scrollbar-width: thin;
+      scrollbar-color: var(--border) transparent;
+    }
+
+    .photo-row {
+      display: flex;
+      align-items: center;
+      height: 88px;
+      flex-shrink: 0;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      user-select: none;
+    }
+
+    .photo-row.is-hidden-row {
+      opacity: 0.55;
+    }
+
+    .photo-row.sortable-ghost {
+      opacity: 0.35;
+    }
+
+    .photo-row.sortable-chosen {
+      box-shadow: 0 6px 20px rgba(13, 13, 13, 0.12);
+    }
+
+    .drag-handle {
+      width: 40px;
+      flex-shrink: 0;
+      align-self: stretch;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: grab;
+      color: var(--ink-muted);
+    }
+
+    .drag-handle:active {
+      cursor: grabbing;
+    }
+
+    .photo-thumb {
+      width: 116px;
+      height: 72px;
+      flex-shrink: 0;
+      object-fit: cover;
+      display: block;
+      background: rgba(13, 13, 13, 0.08);
+    }
+
+    .photo-meta {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 1.4fr 1fr;
+      gap: 0 32px;
+      padding: 0 32px;
+      min-width: 0;
+    }
+
+    .photo-field {
+      min-width: 0;
+    }
+
+    .photo-field-label {
+      display: block;
+      font-size: 12px;
+      line-height: 18px;
+      color: var(--ink-muted);
+    }
+
+    .photo-field-value {
+      display: block;
+      font-size: 15px;
+      line-height: 20px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .photo-actions {
+      display: flex;
+      align-items: center;
+      gap: 22px;
+      padding-right: 24px;
+      flex-shrink: 0;
+    }
+
+    .btn-hide {
+      font-family: var(--font-mono);
+      font-size: 14px;
+      letter-spacing: -0.03em;
+      color: var(--ink);
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0;
+      white-space: nowrap;
+    }
+
+    .btn-hide:hover {
+      color: var(--ink-muted);
+    }
+
+    .btn-hide.is-hidden {
+      color: var(--ink-muted);
+      text-decoration: line-through;
+    }
+
+    .btn-delete {
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      color: var(--danger);
+      opacity: 0.7;
+    }
+
+    .btn-delete:hover {
+      opacity: 1;
+    }
+
+    .empty-state {
+      display: none;
+      padding: 60px 36px;
+      font-size: 18px;
+      color: var(--ink-muted);
+    }
+
+    .empty-state.visible {
+      display: block;
+    }
+
+    /* ── BUTTONS ────────────────────────────────────── */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      height: 46px;
+      padding: 0 22px;
+      font-family: var(--font-mono);
+      font-size: 15px;
+      letter-spacing: -0.03em;
+      cursor: pointer;
+      white-space: nowrap;
+      border: none;
+    }
+
+    .btn-primary {
+      background: var(--ink);
+      color: var(--bg);
+    }
+
+    .btn-primary:hover {
+      opacity: 0.85;
+    }
+
+    .btn-ghost {
+      background: none;
+      border: 1px solid var(--border);
+      color: var(--ink);
+    }
+
+    .btn-ghost:hover {
+      border-color: var(--ink);
+    }
+
+    .btn-danger {
+      background: var(--danger);
+      color: #fff;
+    }
+
+    .btn-danger:hover {
+      opacity: 0.85;
+    }
+
+    .btn-save {
+      background: var(--ink);
+      color: var(--bg);
+      opacity: 0.35;
+      pointer-events: none;
+      transition: opacity 0.15s;
+    }
+
+    .btn-save.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .btn-save.active:hover {
+      opacity: 0.85;
+    }
+
+    .save-status {
+      font-size: 13px;
+      color: var(--ink-muted);
+    }
+
+    /* ── MODALS ─────────────────────────────────────── */
+    .overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(13, 13, 13, 0.45);
+      z-index: 200;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .overlay.open {
+      display: flex;
+    }
+
+    .modal {
+      background: var(--bg);
+      padding: 44px;
+      width: 480px;
+      display: flex;
+      flex-direction: column;
+      gap: 26px;
+    }
+
+    .modal h2 {
+      font-family: var(--font-sans);
+      font-weight: 500;
+      font-size: 28px;
+      letter-spacing: -0.02em;
+    }
+
+    .drop-zone {
+      border: 1px dashed var(--border);
+      padding: 44px 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      text-align: center;
+    }
+
+    .drop-zone:hover,
+    .drop-zone.drag-over {
+      background: rgba(13, 13, 13, 0.04);
+    }
+
+    .drop-zone p {
+      font-size: 14px;
+      color: var(--ink-muted);
+    }
+
+    .drop-zone p.hint {
+      font-size: 12px;
+    }
+
+    .drop-zone input[type="file"] {
+      display: none;
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 12px;
+      justify-content: flex-end;
+    }
+
+    .confirm-message {
+      font-size: 17px;
+      line-height: 1.45;
+    }
+
+    .modal-error {
+      font-size: 13px;
+      color: var(--danger);
+      display: none;
+    }
+
+    .modal-error.visible {
+      display: block;
+    }
+
+    /* ── UPLOAD PROGRESS ────────────────────────────── */
+    .upload-progress {
+      display: none;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .upload-progress-bar {
+      height: 3px;
+      background: rgba(13, 13, 13, 0.12);
+    }
+
+    .upload-progress-fill {
+      height: 100%;
+      background: var(--ink);
+      width: 0%;
+      transition: width 0.15s ease;
+    }
+
+    .upload-progress-label {
+      font-size: 12px;
+      color: var(--ink-muted);
+    }
+
+    /* ── LOGIN ──────────────────────────────────────── */
+    #login-overlay {
+      position: fixed;
+      inset: 0;
+      background: var(--bg);
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #login-overlay.hidden {
+      display: none;
+    }
+
+    #login-pw {
+      font-family: var(--font-mono);
+      font-size: 18px;
+      letter-spacing: -0.03em;
+      background: transparent;
+      border: none;
+      border-bottom: 1px solid var(--border);
+      padding: 8px 0;
+      outline: none;
+      width: 100%;
+      color: var(--ink);
+    }
+
+    #login-pw::placeholder {
+      color: var(--ink-muted);
+    }
+
+    #login-pw:focus {
+      border-bottom-color: var(--ink);
+    }
+
+    .field-label {
+      font-size: 12px;
+      color: var(--ink-muted);
+      text-transform: uppercase;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ── LOGIN ──────────────────────────────────────── -->
+  <div id="login-overlay">
+    <div class="modal" style="width:400px;gap:30px;">
+      <h2>Admin</h2>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <label class="field-label" for="login-pw">Password</label>
+        <input type="password" id="login-pw" placeholder="Enter password" autocomplete="current-password"
+          onkeydown="if(event.key==='Enter')submitLogin()" />
+      </div>
+      <p class="modal-error" id="login-err">Incorrect password.</p>
+      <div class="modal-actions">
+        <button class="btn btn-primary" onclick="submitLogin()">Enter</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── LEFT COLUMN ────────────────────────────────── -->
+  <div class="left-col">
+    <div class="admin-logo">Matija Borbelj <span>/ admin</span></div>
+    <nav id="sidebar-nav"></nav>
+    <p class="sidebar-hint">Drag rows to reorder. Changes go live after “Save changes”.</p>
+  </div>
+
+  <!-- ── RIGHT COLUMN ───────────────────────────────── -->
+  <div class="right-col">
+    <div class="right-top">
+      <button class="btn btn-primary" onclick="openUpload()">
+        <i data-lucide="plus" style="width:18px;height:18px;"></i>
+        Add photo
+      </button>
+    </div>
+
+    <div class="right-main">
+      <div class="main-header">
+        <h1 class="main-title" id="main-title">—</h1>
+        <span class="main-count" id="main-count"></span>
+      </div>
+      <div class="photo-list" id="photo-list"></div>
+      <div class="empty-state" id="empty-state">no photos yet — click “Add photo”</div>
+    </div>
+
+    <div class="right-bottom">
+      <span class="save-status" id="save-status"></span>
+      <button class="btn btn-save" id="btn-save" onclick="saveChanges()">Save changes</button>
+    </div>
+  </div>
+
+  <!-- ── UPLOAD MODAL ───────────────────────────────── -->
+  <div class="overlay" id="upload-overlay" onclick="if(event.target===this&&!uploading)closeUpload()">
+    <div class="modal">
+      <h2 id="upload-title">Add photo</h2>
+      <div class="drop-zone" id="drop-zone" onclick="document.getElementById('file-input').click()">
+        <i data-lucide="upload" style="width:32px;height:32px;color:var(--ink-muted);"></i>
+        <p>Click to choose files or drag and drop here</p>
+        <p class="hint" id="upload-hint">JPG, PNG, WEBP</p>
+        <input type="file" id="file-input" accept="image/*" multiple onchange="handleFiles(this.files)" />
+      </div>
+      <div class="upload-progress" id="upload-progress">
+        <div class="upload-progress-bar">
+          <div class="upload-progress-fill" id="upload-progress-fill"></div>
+        </div>
+        <span class="upload-progress-label" id="upload-progress-label"></span>
+      </div>
+      <p class="modal-error" id="upload-error"></p>
+      <div class="modal-actions">
+        <button class="btn btn-ghost" id="upload-cancel-btn" onclick="closeUpload()">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── CONFIRM MODAL ──────────────────────────────── -->
+  <div class="overlay" id="confirm-overlay" onclick="if(event.target===this)closeConfirm()">
+    <div class="modal" style="width:400px;gap:24px;">
+      <p class="confirm-message" id="confirm-message"></p>
+      <div class="modal-actions">
+        <button class="btn btn-ghost" onclick="closeConfirm()">Cancel</button>
+        <button class="btn btn-danger" onclick="executeConfirm()">Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
+  <script>
+    // ── SECTIONS ──────────────────────────────────────────────
+    const SECTIONS = [
+      { key: 'gallery', label: 'Gallery', maxDim: 2000, hint: 'JPG, PNG, WEBP — resized to 2000px' },
+      { key: 'heroDesktop', label: 'Hero — desktop', maxDim: 2560, hint: 'Landscape photos work best — resized to 2560px' },
+      { key: 'heroMobile', label: 'Hero — mobile', maxDim: 2000, hint: 'Portrait photos work best — resized to 2000px' },
+    ];
+    const WEBP_QUALITY = 0.85;
+
+    // ── STATE ─────────────────────────────────────────────────
+    let manifest = { gallery: [], heroDesktop: [], heroMobile: [] };
+    let currentSection = 'gallery';
+    let deletedUrls = [];     // blob deletions queued until Save
+    let dirty = false;
+    let uploading = false;
+    let sortableInstance = null;
+
+    const $ = id => document.getElementById(id);
+
+    function sectionDef() { return SECTIONS.find(s => s.key === currentSection); }
+    function getPhotos() { return manifest[currentSection]; }
+
+    function markDirty() {
+      dirty = true;
+      $('btn-save').classList.add('active');
+      $('save-status').textContent = 'unsaved changes';
+    }
+
+    // ── AUTH ──────────────────────────────────────────────────
+    async function api(path, opts = {}) {
+      const res = await fetch(path, opts);
+      if (res.status === 401 && path !== '/api/auth') {
+        $('login-overlay').classList.remove('hidden');
+        throw new Error('Unauthorized');
+      }
+      return res;
+    }
+
+    async function submitLogin() {
+      const pw = $('login-pw').value;
+      const res = await fetch('/api/auth', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password: pw }),
+      });
+      if (res.ok) {
+        $('login-overlay').classList.add('hidden');
+        $('login-err').classList.remove('visible');
+        init();
+      } else {
+        $('login-err').classList.add('visible');
+        $('login-pw').value = '';
+        $('login-pw').focus();
+      }
+    }
+
+    // ── SIDEBAR ───────────────────────────────────────────────
+    function renderSidebar() {
+      const nav = $('sidebar-nav');
+      nav.innerHTML = '';
+      SECTIONS.forEach(({ key, label }) => {
+        const item = document.createElement('div');
+        item.className = 'section-item' + (key === currentSection ? ' active' : '');
+        item.innerHTML = `
+          <span class="section-name">${label}</span>
+          <span class="section-count">${manifest[key].length}</span>`;
+        item.onclick = () => {
+          currentSection = key;
+          renderSidebar();
+          renderMain();
+        };
+        nav.appendChild(item);
+      });
+    }
+
+    // ── MAIN ──────────────────────────────────────────────────
+    function renderMain() {
+      const list = $('photo-list');
+      const empty = $('empty-state');
+      const photos = getPhotos();
+
+      $('main-title').textContent = sectionDef().label;
+      $('main-count').textContent = `${photos.length} photo${photos.length !== 1 ? 's' : ''}`;
+
+      list.innerHTML = '';
+      if (!photos.length) {
+        empty.classList.add('visible');
+        return;
+      }
+      empty.classList.remove('visible');
+
+      photos.forEach(photo => {
+        const row = document.createElement('div');
+        row.className = 'photo-row' + (photo.hidden ? ' is-hidden-row' : '');
+        row.dataset.id = photo.id;
+        row.innerHTML = `
+          <div class="drag-handle">
+            <i data-lucide="grip-vertical" style="width:20px;height:20px;"></i>
+          </div>
+          <img class="photo-thumb" src="${photo.url}" alt="" loading="lazy" />
+          <div class="photo-meta">
+            <div class="photo-field">
+              <span class="photo-field-label">Image name</span>
+              <span class="photo-field-value">${photo.name}</span>
+            </div>
+            <div class="photo-field">
+              <span class="photo-field-label">Date uploaded</span>
+              <span class="photo-field-value">${photo.date}</span>
+            </div>
+          </div>
+          <div class="photo-actions">
+            <button class="btn-hide${photo.hidden ? ' is-hidden' : ''}" onclick="toggleHide('${photo.id}')">
+              ${photo.hidden ? 'Show photo' : 'Hide photo'}
+            </button>
+            <button class="btn-delete" onclick="deletePhoto('${photo.id}')" title="Delete">
+              <i data-lucide="trash-2" style="width:20px;height:20px;"></i>
+            </button>
+          </div>`;
+        list.appendChild(row);
+      });
+
+      lucide.createIcons({ attrs: { 'stroke-width': 1.5 } });
+      initSortable();
+    }
+
+    function initSortable() {
+      if (sortableInstance) { sortableInstance.destroy(); sortableInstance = null; }
+      sortableInstance = Sortable.create($('photo-list'), {
+        handle: '.drag-handle',
+        animation: 150,
+        ghostClass: 'sortable-ghost',
+        chosenClass: 'sortable-chosen',
+        onEnd(evt) {
+          const photos = getPhotos();
+          const [moved] = photos.splice(evt.oldIndex, 1);
+          photos.splice(evt.newIndex, 0, moved);
+          markDirty();
+        },
+      });
+    }
+
+    // ── PHOTO ACTIONS ─────────────────────────────────────────
+    function toggleHide(id) {
+      const p = getPhotos().find(p => p.id === id);
+      if (!p) return;
+      p.hidden = !p.hidden;
+      markDirty();
+      renderMain();
+    }
+
+    function deletePhoto(id) {
+      const photos = getPhotos();
+      const photo = photos.find(p => p.id === id);
+      if (!photo) return;
+      showConfirm(`Delete "${photo.name}"?`, () => {
+        const i = photos.findIndex(p => p.id === id);
+        if (i !== -1) photos.splice(i, 1);
+        deletedUrls.push(photo.url); // blob removed on Save
+        markDirty();
+        renderSidebar();
+        renderMain();
+      });
+    }
+
+    // ── CONFIRM DIALOG ────────────────────────────────────────
+    let _confirmCb = null;
+    function showConfirm(message, onConfirm) {
+      $('confirm-message').textContent = message;
+      $('confirm-overlay').classList.add('open');
+      _confirmCb = onConfirm;
+    }
+    function closeConfirm() {
+      $('confirm-overlay').classList.remove('open');
+      _confirmCb = null;
+    }
+    function executeConfirm() {
+      const cb = _confirmCb;
+      closeConfirm();
+      if (cb) cb();
+    }
+
+    // ── SAVE ──────────────────────────────────────────────────
+    async function saveChanges() {
+      const btn = $('btn-save');
+      btn.textContent = 'Saving…';
+      try {
+        if (deletedUrls.length) {
+          await api('/api/delete', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ urls: deletedUrls }),
+          });
+          deletedUrls = [];
+        }
+        const res = await api('/api/manifest', {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(manifest),
+        });
+        if (!res.ok) throw new Error('Save failed');
+        dirty = false;
+        btn.classList.remove('active');
+        btn.textContent = 'Saved ✓';
+        $('save-status').textContent = '';
+        setTimeout(() => { btn.textContent = 'Save changes'; }, 1400);
+      } catch (e) {
+        btn.textContent = 'Save changes';
+        $('save-status').textContent = 'save failed — try again';
+      }
+    }
+
+    window.addEventListener('beforeunload', e => {
+      if (dirty || uploading) { e.preventDefault(); e.returnValue = ''; }
+    });
+
+    // ── UPLOAD ────────────────────────────────────────────────
+    function openUpload() {
+      $('upload-title').textContent = `Add photo — ${sectionDef().label}`;
+      $('upload-hint').textContent = sectionDef().hint;
+      $('upload-error').classList.remove('visible');
+      $('upload-overlay').classList.add('open');
+    }
+    function closeUpload() {
+      if (uploading) return;
+      $('upload-overlay').classList.remove('open');
+      $('file-input').value = '';
+    }
+
+    async function handleFiles(files) {
+      if (!files.length || uploading) return;
+      uploading = true;
+      const section = currentSection;
+      const def = sectionDef();
+      const today = new Date();
+      const dateStr = `${String(today.getDate()).padStart(2, '0')}.${String(today.getMonth() + 1).padStart(2, '0')}.${today.getFullYear()}.`;
+      const total = files.length;
+      const fileArr = Array.from(files);
+
+      const progressEl = $('upload-progress');
+      const fillEl = $('upload-progress-fill');
+      const labelEl = $('upload-progress-label');
+      $('upload-error').classList.remove('visible');
+      progressEl.style.display = 'flex';
+      fillEl.style.width = '0%';
+      labelEl.textContent = `0 / ${total}`;
+      $('upload-cancel-btn').disabled = true;
+
+      let failed = 0;
+      for (let i = 0; i < total; i++) {
+        try {
+          const { blob, w, h } = await processImage(fileArr[i], def.maxDim);
+          const res = await api(`/api/upload?section=${section}&name=${encodeURIComponent(fileArr[i].name)}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/octet-stream' },
+            body: blob,
+          });
+          if (!res.ok) throw new Error('upload failed');
+          const { id, url } = await res.json();
+          manifest[section].push({ id, url, name: fileArr[i].name, date: dateStr, w, h, hidden: false });
+          markDirty();
+        } catch (e) {
+          failed++;
+        }
+        fillEl.style.width = `${Math.round(((i + 1) / total) * 100)}%`;
+        labelEl.textContent = `${i + 1} / ${total}`;
+      }
+
+      uploading = false;
+      progressEl.style.display = 'none';
+      $('upload-cancel-btn').disabled = false;
+      if (failed) {
+        const err = $('upload-error');
+        err.textContent = `${failed} file${failed !== 1 ? 's' : ''} failed to upload.`;
+        err.classList.add('visible');
+      } else {
+        closeUpload();
+      }
+      renderSidebar();
+      renderMain();
+    }
+
+    // resize to maxDim + convert to webp — same pipeline as before
+    function processImage(file, maxDim) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = e => {
+          const img = new Image();
+          img.onload = () => {
+            const ow = img.naturalWidth;
+            const oh = img.naturalHeight;
+            const scale = Math.min(1, maxDim / Math.max(ow, oh));
+            const w = Math.round(ow * scale);
+            const h = Math.round(oh * scale);
+            const canvas = document.createElement('canvas');
+            canvas.width = w;
+            canvas.height = h;
+            canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+            canvas.toBlob(blob => blob ? resolve({ blob, w, h }) : reject(new Error('encode failed')), 'image/webp', WEBP_QUALITY);
+          };
+          img.onerror = () => reject(new Error('not an image'));
+          img.src = e.target.result;
+        };
+        reader.onerror = () => reject(new Error('read failed'));
+        reader.readAsDataURL(file);
+      });
+    }
+
+    const dropZone = $('drop-zone');
+    dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('drag-over'); });
+    dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
+    dropZone.addEventListener('drop', e => {
+      e.preventDefault();
+      dropZone.classList.remove('drag-over');
+      handleFiles(e.dataTransfer.files);
+    });
+
+    // ── INIT ──────────────────────────────────────────────────
+    async function init() {
+      try {
+        const res = await fetch('/api/manifest', { cache: 'no-store' });
+        if (res.ok) {
+          const data = await res.json();
+          manifest = {
+            gallery: data.gallery || [],
+            heroDesktop: data.heroDesktop || [],
+            heroMobile: data.heroMobile || [],
+          };
+        }
+      } catch (e) { /* start empty */ }
+      renderSidebar();
+      renderMain();
+      lucide.createIcons({ attrs: { 'stroke-width': 1.5 } });
+    }
+
+    (async function boot() {
+      const res = await fetch('/api/auth').then(r => r.json()).catch(() => ({ authed: false }));
+      if (res.authed) {
+        $('login-overlay').classList.add('hidden');
+        init();
+      } else {
+        $('login-pw').focus();
+      }
+    })();
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,11 @@
+{
+  "name": "matija-borbelj-website",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node dev-server.js"
+  },
+  "dependencies": {
+    "@vercel/blob": "latest"
+  }
+}

@@ -1,0 +1,9 @@
+node_modules/
+.vercel/
+.dev-data/
+uploads/
+.DS_Store
+_test.html
+Photos/
+Mockups/
+dev-examples/
