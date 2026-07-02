@@ -3,8 +3,10 @@
 // The session token is `expiry.hmac(expiry)` — stateless, no DB.
 import crypto from 'node:crypto';
 
-const isProd = process.env.NODE_ENV === 'production' || !!process.env.VERCEL;
-const PASSWORD = process.env.ADMIN_PASSWORD || (isProd ? crypto.randomBytes(32).toString('hex') : 'matija123');
+if (!process.env.ADMIN_PASSWORD) {
+  throw new Error('ADMIN_PASSWORD environment variable is required but not configured.');
+}
+const PASSWORD = process.env.ADMIN_PASSWORD;
 const SESSION_SECRET = process.env.SESSION_SECRET || crypto.randomBytes(32).toString('hex');
 const KEY = crypto
   .createHash('sha256')

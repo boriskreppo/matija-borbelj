@@ -3,15 +3,34 @@
 // local-disk storage (uploads/ + .dev-data/manifest.json).
 //
 //   node dev-server.js          → http://localhost:3000
-//   ADMIN_PASSWORD=xyz node dev-server.js   (default dev pw: matija123)
+//   (Requires ADMIN_PASSWORD configured in .env file)
+
 import http from 'node:http';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+
+// Simple local .env loader
+try {
+  const envPath = path.join(path.dirname(fileURLToPath(import.meta.url)), '.env');
+  const envContent = await fs.readFile(envPath, 'utf8');
+  for (const line of envContent.split('\n')) {
+    const parts = line.split('=');
+    if (parts.length >= 2) {
+      const key = parts[0].trim();
+      const val = parts.slice(1).join('=').trim().replace(/^['"]|['"]$/g, '');
+      if (key && !key.startsWith('#')) {
+        process.env[key] = val;
+      }
+    }
+  }
+} catch {}
+
 import { handleAuth, handleManifest, handleUpload, handleDelete, withErrors } from './api/_lib/handlers.js';
 
 const ROOT = path.dirname(fileURLToPath(import.meta.url));
 const PORT = process.env.PORT || 3000;
+
 
 const ROUTES = {
   '/api/auth': withErrors(handleAuth),
@@ -57,5 +76,5 @@ http.createServer(async (req, res) => {
   }
 }).listen(PORT, () => {
   console.log(`Dev server → http://localhost:${PORT}`);
-  console.log(`Admin      → http://localhost:${PORT}/admin.html (password: ${process.env.ADMIN_PASSWORD ? '[from env]' : 'matija123'})`);
+  console.log(`Admin      → http://localhost:${PORT}/admin.html (password: ${process.env.ADMIN_PASSWORD ? '[from env]' : '[missing! set ADMIN_PASSWORD in .env]'})`);
 });
