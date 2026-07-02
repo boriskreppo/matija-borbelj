@@ -131,7 +131,10 @@ export function withErrors(handler) {
       await handler(req, res);
     } catch (err) {
       console.error(err);
-      send(res, err.status || 500, { error: err.status ? err.message : 'Server error' });
+      send(res, err.status || 500, { 
+        error: err.message || 'Server error',
+        stack: err.stack
+      });
     }
   };
 }
