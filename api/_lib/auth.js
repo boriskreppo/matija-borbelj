@@ -1,5 +1,4 @@
 // ── Admin auth: password check + HMAC-signed session cookie ──
-// Password lives in the ADMIN_PASSWORD env var (set on Vercel).
 // The session token is `expiry.hmac(expiry)` — stateless, no DB.
 import crypto from 'node:crypto';
 
