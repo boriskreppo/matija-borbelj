@@ -84,6 +84,7 @@ export async function handleManifest(req, res) {
       h: Number(p.h) || null,
       hidden: !!p.hidden,
       customWidth: p.customWidth ? String(p.customWidth) : '',
+      scale: Number(p.scale) || 100,
     })).filter(p => p.id && p.url);
   }
   await writeManifest(manifest);

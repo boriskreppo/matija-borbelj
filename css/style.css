@@ -187,8 +187,8 @@ a {
 
 .gallery img {
   /* equal width for every photo; 50vh cap keeps a 2:3 portrait
-     inside the strip on any screen ratio */
-  width: min(28vw, 50vh);
+     inside the strip on any screen ratio. Custom scale/width can adjust it. */
+  width: var(--custom-width, calc(min(28vw, 50vh) * var(--photo-scale, 1)));
   height: auto;
   flex-shrink: 0;
 }

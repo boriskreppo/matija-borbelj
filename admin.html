@@ -245,25 +245,55 @@
     }
 
     .photo-meta.has-width-field {
-      grid-template-columns: 1.2fr 0.8fr 1fr;
+      grid-template-columns: 1.2fr 0.8fr 1.2fr;
     }
 
-    .photo-width-input {
-      font-family: var(--font-mono);
-      font-size: 14px;
-      letter-spacing: -0.03em;
+    .photo-scale-control {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-top: 2px;
+    }
+
+    .photo-scale-btn {
       background: transparent;
-      border: none;
-      border-bottom: 1px solid var(--border);
-      padding: 2px 0;
-      outline: none;
-      width: 100%;
+      border: 1px solid var(--border);
       color: var(--ink);
+      font-family: var(--font-mono);
+      font-size: 11px;
+      padding: 3px 8px;
+      cursor: pointer;
+      user-select: none;
+      transition: all 0.12s ease;
     }
 
-    .photo-width-input:focus {
-      border-bottom-color: var(--ink);
+    .photo-scale-btn:hover {
+      background: var(--ink);
+      color: var(--bg);
+      border-color: var(--ink);
     }
+
+    .photo-scale-info {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-width: 50px;
+    }
+
+    .photo-scale-label {
+      font-size: 9px;
+      color: var(--ink-muted);
+      text-transform: uppercase;
+      line-height: 11px;
+      letter-spacing: 0.05em;
+    }
+
+    .photo-scale-percent {
+      font-size: 13px;
+      font-weight: 500;
+      line-height: 15px;
+    }
+
 
 
     .photo-field {
@@ -750,9 +780,15 @@
               <span class="photo-field-value">${photo.date}</span>
             </div>
             ${currentSection === 'gallery' ? `
-            <div class="photo-field">
-              <span class="photo-field-label">Custom width (e.g., 35vw, 40%)</span>
-              <input type="text" class="photo-width-input" value="${photo.customWidth || ''}" placeholder="Default" onchange="updateCustomWidth('${photo.id}', this.value)" />
+            <div class="photo-field" style="display: flex; flex-direction: column; align-items: center;">
+              <span class="photo-field-label">Size scale</span>
+              <div class="photo-scale-control">
+                <button type="button" class="photo-scale-btn" onclick="changeScale('${photo.id}', -10)">- 10%</button>
+                <div class="photo-scale-info">
+                  <span class="photo-scale-percent">${photo.scale || 100}%</span>
+                </div>
+                <button type="button" class="photo-scale-btn" onclick="changeScale('${photo.id}', 10)">+ 10%</button>
+              </div>
             </div>
             ` : ''}
           </div>
@@ -788,11 +824,19 @@
     }
 
     // ── PHOTO ACTIONS ─────────────────────────────────────────
-    function updateCustomWidth(id, val) {
+    function changeScale(id, amount) {
       const p = getPhotos().find(p => p.id === id);
       if (!p) return;
-      p.customWidth = val.trim();
+      let scale = p.scale !== undefined ? Number(p.scale) : 100;
+      scale = Math.max(10, Math.min(300, scale + amount));
+      p.scale = scale;
       markDirty();
+
+      const row = document.querySelector(`.photo-row[data-id="${id}"]`);
+      if (row) {
+        const percentEl = row.querySelector('.photo-scale-percent');
+        if (percentEl) percentEl.textContent = `${scale}%`;
+      }
     }
 
     function toggleHide(id) {
