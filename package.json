@@ -6,6 +6,7 @@
     "dev": "node dev-server.js"
   },
   "dependencies": {
-    "@vercel/blob": "latest"
+    "@vercel/blob": "latest",
+    "@vercel/speed-insights": "^2.0.0"
   }
 }
