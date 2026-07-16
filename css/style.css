@@ -291,6 +291,82 @@ a {
 }
 
 /* ════════════════════════════════════════════════════════════
+   INFO
+   ════════════════════════════════════════════════════════════ */
+.page-info {
+  height: 100dvh;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 0 var(--pad) var(--pad);
+  overflow: hidden;
+  text-align: center;
+}
+
+.info-logo {
+  display: inline-block;
+  width: 32.1vw;
+  max-width: 617px;
+  height: auto;
+  margin-bottom: 45px;
+}
+
+.info-logo img {
+  width: 100%;
+  display: block;
+}
+
+.info-body {
+  max-width: 920px;
+  font-size: 20px;
+  line-height: 24px;
+  letter-spacing: -0.06em;
+  text-align: center;
+}
+
+.info-contact {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 60px;
+  gap: 0;
+}
+
+.info-mail,
+.info-phone {
+  font-family: var(--font-sans);
+  font-weight: 500;
+  font-size: 32px;
+  line-height: 32px;
+  letter-spacing: -0.06em;
+  text-decoration: none;
+  color: inherit;
+  text-align: right;
+}
+
+.info-phone {
+  margin-top: 16px;
+}
+
+.info-instagram {
+  font-size: 20px;
+  line-height: 24px;
+  letter-spacing: -0.03em;
+  text-decoration: none;
+  color: inherit;
+  margin-top: 24px;
+  text-transform: uppercase;
+}
+
+.info-mail:hover,
+.info-phone:hover,
+.info-instagram:hover {
+  opacity: 0.6;
+}
+
+/* ════════════════════════════════════════════════════════════
    CONTACT
    ════════════════════════════════════════════════════════════ */
 .page-contact {
@@ -534,6 +610,44 @@ a {
 
   .gallery img {
     width: 100%;
+  }
+
+  /* ── info ── */
+  .page-info {
+    height: auto;
+    justify-content: flex-start;
+    align-items: flex-start;
+    text-align: left;
+    padding: 83px var(--pad-m) 60px;
+    overflow: visible;
+  }
+
+  .info-logo {
+    width: 246px;
+    margin-bottom: 32px;
+  }
+
+  .info-body {
+    font-size: 14px;
+    line-height: 20px;
+    text-align: left;
+    max-width: 100%;
+  }
+
+  .info-contact {
+    align-items: flex-start;
+    margin-top: 48px;
+  }
+
+  .info-mail,
+  .info-phone {
+    font-size: 20px;
+    line-height: 24px;
+    text-align: left;
+  }
+
+  .info-phone {
+    margin-top: 12px;
   }
 
   /* ── about ── */
